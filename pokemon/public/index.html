@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Pokemon Database</title>
+        
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <link rel="stylesheet" href="./stylesheets/style.css" />
+    </head>
+    
+    <body>
+        <div id="app" class="container text-center">
+            <h1>Which pokemon would you like to know more about?</h1>
+            <form>
+                <input type="text" v-model="pokemon_name">
+                <button class="button2" v-on:click.prevent="getPokeInfo">Submit</button>
+            </form>
+            
+            <p v-if="pokemon_info.error">{{ pokemon_info.error }}</p>
+            
+            <!-- valid search, so show pokemon stats -->
+            <h2 v-if="pokemon_info.name">{{ pokemon_info.name }}</h2>
+            
+            <img v-if="pokemon_info.sprites" v-bind:src="pokemon_info.sprites.front_default" alt="pokemon img"/>
+            
+            <h3 v-if="pokemon_info.name"><u>Basic Info</u></h3>
+            <div class="row" v-if="pokemon_info.name">
+                <div class="col-sm">
+                    <p>Type(s):</p>
+                    <ul v-for="type in pokemon_info.types">
+                        <li>{{ type.type.name }}</li>
+                    </ul>
+                </div>
+                <div class="col-sm">
+                    <p>Weight</p>
+                    <p>{{ pokemon_info.weight }}</p>
+                </div>
+                <div class="col-sm">
+                    <p>Height</p>
+                    <p>{{ pokemon_info.height }}</p>
+                </div>
+                <div class="col-sm">
+                    <p>Abilities</p>
+                    <ul v-for="ability in pokemon_info.abilities">
+                        <li>{{ ability.ability.name }}</li>
+                    </ul>
+                </div>
+                <div class="col-sm">
+                    <p>Base Experience</p>
+                    <p>{{ pokemon_info.base_experience }}</p>
+                </div>
+            </div>
+            
+            <h3 v-if="pokemon_info.name"><u>Stats</u></h3>
+            <div v-if="pokemon_info.stats" v-for="stat in pokemon_info.stats">
+                <div class="row">
+                    <div class="col-sm"></div>
+                    <div class="col-sm text-right">
+                        <p>{{ stat.stat.name }}: {{ stat.base_stat }}</p>
+                    </div>
+                    <div class="col-sm text-left">
+                        <div class="progress">
+                            <div class="progress-bar" v-bind:style="getStatPercentage(stat.base_stat, 255)" 
+                            role="progressbar" v-bind:aria-valuenow="stat.base_stat" 
+                            aria-valuemin="0" aria-valuemax="255"></div>
+                        </div> 
+                    </div>
+                    <div class="col-sm"></div>
+                </div>
+            </div>
+        </div>
+        
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script type="text/javascript" src="./javascripts/script.js"></script>
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    </body>
+</html>
