@@ -1,1 +1,47 @@
+body {
+    /*background-image: url('../images/pokemon_background.jpeg');*/
+    background-image: url('../images/pokemon.jpg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+}
 
+.transbox {
+  margin-top: 30px;
+  margin-bottom: 30px;
+  padding-top: 50px;
+  padding-left: 50px;
+  padding-right: 50px;
+  padding-bottom: 10px;
+  border: 1px solid black;
+  background: rgba(255, 255, 255, .9);
+}
+
+/*.transbox p {*/
+/*  font-weight: bold;*/
+/*}*/
+
+.error_txt {
+  margin-top: 5px;
+  color: red;
+  font-family: 'Kalam', cursive;
+  font-size: 130%;
+}
+
+h1, h2, h3 {
+  font-family: 'Courgette', cursive;
+}
+
+p {
+  font-family: 'Kalam', cursive;
+  font-size: 135%;
+}
+
+.progress {
+  background-color: black;
+}
+
+.my_footer {
+  margin-top: 50px;
+}

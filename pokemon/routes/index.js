@@ -10,9 +10,9 @@ router.get('/', function(req, res, next) {
     res.render('index', { title: 'Express' });
 });
 
-router.get('/pokeCount', function(req, res) {
-    request(url).pipe(res);
-});
+// router.get('/pokeCount', function(req, res) {
+//     request(url).pipe(res);
+// });
 
 router.get('/getPokemonInfo', function(req, res) {
     let poke = req.query.p.toLowerCase();
