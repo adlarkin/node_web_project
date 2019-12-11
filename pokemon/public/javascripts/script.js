@@ -8,10 +8,15 @@ var app = new Vue({
         pokemon_name: '',
         pokemon_info: '',
         total_num_pokemon: 807,
+        isSearchActive: false,
+        isViewSavedActive: false,
+        savedPokemon: [],
     },
     
     created() {
-        // this.getNumPokemon();
+        this.isSearchActive = true;
+        this.isViewSavedActive = false;
+        this.savedPokemon = this.getSavedPokemon();
     },
     
     methods: {
@@ -21,16 +26,6 @@ var app = new Vue({
             }
             return response;
         },
-        // getNumPokemon() {
-        //     fetch('/pokeCount')
-        //         .then((data) => {
-        //             return data.json();
-        //         })
-        //         .then((basicInfo) => {
-        //             this.total_num_pokemon = basicInfo["count"];
-        //             console.log("total num_pokemon is " + this.total_num_pokemon);
-        //         });
-        // },
         getPokeInfo() {
             if (this.pokemon_name === '') {
                 return;
@@ -46,6 +41,7 @@ var app = new Vue({
                 .then((pokeInfo) => {
                     console.log(pokeInfo);
                     this.pokemon_info  = pokeInfo;
+                    this.pokemon_name = pokeInfo.id;
                 })
                 .catch(error => {
                     console.log(error);
@@ -61,6 +57,52 @@ var app = new Vue({
         },
         getStatPercentage(val, max) {
             return "width: " + (Math.round((val/max) * 100)).toString() + "%";
-        }
+        },
+        clickedViewSaved() {
+            this.isViewSavedActive = true;
+            this.isSearchActive = false;
+        },
+        clickedSearch() {
+            this.isViewSavedActive = false;
+            this.isSearchActive = true;
+        },
+        async savePokemon() {
+            // don't add if pokemon is already saved
+            for (var i = 0; i < this.savedPokemon.length; i++) {
+                if (this.savedPokemon[i].id_number === this.pokemon_name) {
+                    console.log("this pokemon has already been saved");
+                    return;
+                }
+            }
+            
+            try {
+                let response = await axios.post('/api/items', {
+                    number: this.pokemon_name,
+                    pic: this.pokemon_info.sprites.front_default,
+                });
+                console.log("succesfully added pokemon " + this.pokemon_name);
+                this.getSavedPokemon();
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        async getSavedPokemon() {
+            // TODO call the get from the db  
+            try {
+                let response = await axios.get('/api/items');
+                this.savedPokemon = response.data;
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        async removePokemon(id) {
+            console.log("removing pokemon " + id);
+            try {
+                let response = await axios.delete('/api/items/' + id);
+                this.getSavedPokemon();
+            } catch (error) {
+                console.log(error);
+            }
+        },
     },
 });

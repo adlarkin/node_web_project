@@ -8,78 +8,122 @@
         <link rel="stylesheet" href="./stylesheets/style.css" />
     </head>
     
-    <body class="container">
-        <div id="app" class="container text-center transbox">
-            <h1>Which pokemon would you like to know more about?</h1>
-            <button v-on:click.prevent="getRandomPoke">Pick Random Pokemon</button>
-            <form>
-                <input type="text" v-model="pokemon_name" placeholder="bulbasaur or 1">
-                <button v-on:click.prevent="getPokeInfo">Submit</button>
-            </form>
+    <body>
+        <div id="app">
+            <nav class="navbar navbar-expand-lg navbar-dark ">
+              <a class="navbar-brand" href="#">Pokemon Database</a>
+              <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                  <li class="nav-item" v-bind:class="{ active: isSearchActive }">
+                    <a class="nav-link" v-on:click="clickedSearch">Search </a>
+                  </li>
+                  <li class="nav-item" v-bind:class="{ active: isViewSavedActive }">
+                    <a class="nav-link" v-on:click="clickedViewSaved">View Saved</a>
+                  </li>
+                </ul>
+              </div>
+            </nav>
             
-            <p class="error_txt" v-if="pokemon_info.error">{{ pokemon_info.error }}</p>
-            
-            <!-- valid search, so show pokemon stats -->
-            <h2 v-if="pokemon_info.name">{{ pokemon_info.name }}</h2>
-            
-            <img v-if="pokemon_info.sprites" v-bind:src="pokemon_info.sprites.front_default" alt="pokemon img"/>
-            
-            <h3 v-if="pokemon_info.name"><u>Basic Info</u></h3>
-            <div class="row" v-if="pokemon_info.name">
-                <div class="col-sm">
-                    <p class="text-primary font-weight-bold">Type(s):</p>
-                    <ul v-for="type in pokemon_info.types">
-                        <li><p>{{ type.type.name }}</p></li>
-                    </ul>
-                </div>
-                <div class="col-sm">
-                    <p class="text-primary font-weight-bold">Weight</p>
-                    <p>{{ pokemon_info.weight }}</p>
-                </div>
-                <div class="col-sm">
-                    <p class="text-primary font-weight-bold">Height</p>
-                    <p>{{ pokemon_info.height }}</p>
-                </div>
-                <div class="col-sm">
-                    <p class="text-primary font-weight-bold">Abilities</p>
-                    <ul v-for="ability in pokemon_info.abilities">
-                        <li><p>{{ ability.ability.name }}</p></li>
-                    </ul>
-                </div>
-                <div class="col-sm">
-                    <p class="text-primary font-weight-bold">Base Experience</p>
-                    <p>{{ pokemon_info.base_experience }}</p>
-                </div>
-            </div>
-            
-            <h3 v-if="pokemon_info.name"><u>Stats</u></h3>
-            <div v-if="pokemon_info.stats" v-for="stat in pokemon_info.stats">
-                <div class="row">
-                    <div class="col-sm"></div>
-                    <div class="col-sm text-right">
-                        <p><span class="text-primary font-weight-bold">{{ stat.stat.name }}</span> {{ stat.base_stat }}</p>
+            <div class="text-center transbox container">
+                <div v-if="isSearchActive">
+                    <h1>Which pokemon would you like to know more about?</h1>
+                    <button v-on:click.prevent="getRandomPoke">Pick Random Pokemon</button>
+                    <form>
+                        <input type="text" v-model="pokemon_name" placeholder="bulbasaur or 1">
+                        <button v-on:click.prevent="getPokeInfo">Submit</button>
+                    </form>
+                    
+                    <p class="error_txt" v-if="pokemon_info.error">{{ pokemon_info.error }}</p>
+                    
+                    <!-- valid search, so show pokemon stats -->
+                    <h2 v-if="pokemon_info.name">{{ pokemon_info.name }}</h2>
+                    
+                    <img v-if="pokemon_info.sprites" v-bind:src="pokemon_info.sprites.front_default" alt="pokemon img"/>
+
+                    <br v-if="pokemon_info.name">
+                    <button v-if="pokemon_info.name" v-on:click.prevent="savePokemon">Save</button>
+                    <br v-if="pokemon_info.name">
+                    
+                    <h3 v-if="pokemon_info.name"><u>Basic Info</u></h3>
+                    <div class="row" v-if="pokemon_info.name">
+                        <div class="col-sm">
+                            <p class="text-primary font-weight-bold">Type(s):</p>
+                            <ul v-for="type in pokemon_info.types">
+                                <li><p>{{ type.type.name }}</p></li>
+                            </ul>
+                        </div>
+                        <div class="col-sm">
+                            <p class="text-primary font-weight-bold">Weight</p>
+                            <p>{{ pokemon_info.weight }}</p>
+                        </div>
+                        <div class="col-sm">
+                            <p class="text-primary font-weight-bold">Height</p>
+                            <p>{{ pokemon_info.height }}</p>
+                        </div>
+                        <div class="col-sm">
+                            <p class="text-primary font-weight-bold">Abilities</p>
+                            <ul v-for="ability in pokemon_info.abilities">
+                                <li><p>{{ ability.ability.name }}</p></li>
+                            </ul>
+                        </div>
+                        <div class="col-sm">
+                            <p class="text-primary font-weight-bold">Base Experience</p>
+                            <p>{{ pokemon_info.base_experience }}</p>
+                        </div>
                     </div>
-                    <div class="col-sm text-left">
-                        <div class="progress">
-                            <div class="progress-bar" v-bind:style="getStatPercentage(stat.base_stat, 255)" 
-                            role="progressbar" v-bind:aria-valuenow="stat.base_stat" 
-                            aria-valuemin="0" aria-valuemax="255"></div>
-                        </div> 
+                    
+                    <h3 v-if="pokemon_info.name"><u>Stats</u></h3>
+                    <div v-if="pokemon_info.stats" v-for="stat in pokemon_info.stats">
+                        <div class="row">
+                            <div class="col-sm"></div>
+                            <div class="col-sm text-right">
+                                <p><span class="text-primary font-weight-bold">{{ stat.stat.name }}</span> {{ stat.base_stat }}</p>
+                            </div>
+                            <div class="col-sm text-left">
+                                <div class="progress">
+                                    <div class="progress-bar" v-bind:style="getStatPercentage(stat.base_stat, 255)" 
+                                    role="progressbar" v-bind:aria-valuenow="stat.base_stat" 
+                                    aria-valuemin="0" aria-valuemax="255"></div>
+                                </div> 
+                            </div>
+                            <div class="col-sm"></div>
+                        </div>
                     </div>
-                    <div class="col-sm"></div>
                 </div>
-            </div>
+                <div v-else>
+                    <h1>Saved Pokemon</h1>
+                    <div v-if="savedPokemon.length > 0">
+                        <div v-for="pokemon in savedPokemon">
+                            <div class="row">
+                                <div class="col-sm text-right align-self-center">
+                                    <button v-on:click.prevent="removePokemon(pokemon.id_number)" type="button" class="btn btn-outline-danger">Remove</button>
+                                </div>
+                                <div class="col-sm text-left align-self-center">
+                                    <img v-bind:src="pokemon.pic" alt="pokemon img"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div v-else>
+                        <p>Sorry; no pokemon have been saved yet :( Go back to the search page to save your favorites!<p>
+                    </div>
+                </div>
             
-            <div class="my_footer">
-                <hr>
-                <a href="https://github.com/adlarkin/node_web_project" target="_blank">GitHub</a>
+                <div class="my_footer">
+                    <hr>
+                    <a href="https://github.com/adlarkin/node_web_project" target="_blank">GitHub</a>
+                </div>
             </div>
         </div>
         
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js" integrity="sha256-mpnrJ5DpEZZkwkE1ZgkEQQJW/46CSEh/STrZKOB/qoM=" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-        <script type="text/javascript" src="./javascripts/script.js"></script>
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        <script type="text/javascript" src="./javascripts/script.js"></script>
     </body>
 </html>
